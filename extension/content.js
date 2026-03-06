@@ -2,6 +2,7 @@ const YAB_REPORT_CONTAINER_ID = "yab-report-container";
 
 let settings = {
   colorTheme: "default",
+  showTooltip: true,
   customFlagged: "#ff9100", customReported: "#f44336",
 };
 let currentVideoId = null;
@@ -28,6 +29,10 @@ chrome.storage.onChanged.addListener((changes) => {
   }
   if (changes.colorTheme || changes.customFlagged || changes.customReported) {
     applyTheme(settings.colorTheme);
+  }
+  if (changes.showTooltip && !settings.showTooltip) {
+    const tooltip = document.getElementById("yab-tooltip");
+    if (tooltip) tooltip.classList.remove("yab-tooltip-visible");
   }
 });
 
@@ -168,7 +173,9 @@ function createReportUI(info) {
 
   reportBtn.addEventListener("click", () => handleReport());
   reportBtn.addEventListener("touchstart", () => handleReport());
-  reportBtn.addEventListener("mouseenter", () => tooltip.classList.add("yab-tooltip-visible"));
+  reportBtn.addEventListener("mouseenter", () => {
+    if (settings.showTooltip !== false) tooltip.classList.add("yab-tooltip-visible");
+  });
   reportBtn.addEventListener("mouseleave", () => tooltip.classList.remove("yab-tooltip-visible"));
 
   container.appendChild(reportBtn);

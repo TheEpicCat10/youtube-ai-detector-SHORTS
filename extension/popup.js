@@ -19,15 +19,20 @@ function updateCustomSwatchPreview(flagged, reported) {
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(
-    { colorTheme: "default", ...COLOR_DEFAULTS },
+    { colorTheme: "default", showTooltip: true, ...COLOR_DEFAULTS },
     (values) => {
       setActiveThemeSwatch(values.colorTheme);
+      document.getElementById("toggle-tooltip").checked = values.showTooltip;
 
       document.getElementById("color-flagged").value = values.customFlagged;
       document.getElementById("color-reported").value = values.customReported;
       updateCustomSwatchPreview(values.customFlagged, values.customReported);
     }
   );
+
+  document.getElementById("toggle-tooltip").addEventListener("change", (e) => {
+    chrome.storage.local.set({ showTooltip: e.target.checked });
+  });
 
   document.getElementById("theme-picker").addEventListener("click", (e) => {
     const swatch = e.target.closest(".theme-swatch");

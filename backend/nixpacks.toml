@@ -1,2 +1,2 @@
 [start]
-cmd = "./youtube-ai-blocker-backend"
+cmd = "./target/release/youtube-ai-blocker-backend"

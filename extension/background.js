@@ -163,6 +163,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     chrome.storage.local.get(
       {
         colorTheme: "default",
+        showTooltip: true,
         customFlagged: "#ff9100",
         customReported: "#f44336",
       },
