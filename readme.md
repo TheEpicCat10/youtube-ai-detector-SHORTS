@@ -200,6 +200,35 @@ Aggregate counts (used by the landing page).
 }
 ```
 
+## Docker deployment
+
+The backend uses a multi-stage Dockerfile with [cargo-chef](https://github.com/LukeMathWalker/cargo-chef) for optimized layer caching.
+
+```bash
+cd backend
+docker build -t yab-backend .
+```
+
+### How it works
+
+| Stage | Purpose | Cached unless... |
+|---|---|---|
+| **planner** | Extracts a dependency-only recipe from `Cargo.toml`/`Cargo.lock` | Always runs (<1s) |
+| **builder** | `cargo chef cook` compiles all deps, then `cargo build` compiles the app | `cook` invalidates on dep changes; `build` runs on every source change (~7s) |
+| **runtime** | `debian:bookworm-slim` with just the binary, migrations, and static files | Binary changes |
+
+On a source-only change (no new dependencies), rebuilds take ~7 seconds instead of recompiling everything from scratch. The final image is ~137 MB.
+
+### Coolify
+
+Set the build pack to **Dockerfile** with:
+
+- **Dockerfile location**: `/backend/Dockerfile`
+- **Build context**: `/backend`
+- **Environment variables**: `DATABASE_URL`, `PORT` (default 3000), `CACHE_TTL_SECS`
+
+---
+
 ## Tech stack
 
 - **Extension**: Vanilla JS, Chrome Manifest V3, `chrome.storage.local`
