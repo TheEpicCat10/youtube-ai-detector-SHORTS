@@ -133,13 +133,13 @@
 /* ---------- Custom Tooltip ---------- */
 
 .yab-tooltip {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 6px;
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, calc(-100% - 10px));
   width: 260px;
   padding: 12px 14px;
   border-radius: 10px;
@@ -150,9 +150,10 @@
   line-height: 1.45;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
   pointer-events: none;
-  z-index: 2200;
+  z-index: 1000000;
+  visibility: hidden;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
 .yab-tooltip::after {
@@ -166,8 +167,18 @@
 }
 
 .yab-tooltip.yab-tooltip-visible {
-  display: flex;
+  visibility: visible;
   opacity: 1;
+}
+
+.yab-tooltip[data-placement="bottom"] {
+  transform: translate(-50%, 10px);
+}
+
+.yab-tooltip[data-placement="bottom"]::after {
+  top: -12px;
+  border-top-color: transparent;
+  border-bottom-color: #212121;
 }
 
 .yab-tooltip-heading {
@@ -193,4 +204,3 @@
   opacity: 0.5;
   pointer-events: none;
 }
-

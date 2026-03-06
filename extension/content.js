@@ -164,9 +164,7 @@ function createReportUI(info) {
   reportBtn.className = "yab-report-btn";
   reportBtn.innerHTML = `${ICON_FLAG}<span class="yab-btn-label">AI slop</span><span class="yab-count" id="yab-report-count">${formatCount(info?.report_count || 0)}</span>`;
 
-  const tooltip = document.createElement("div");
-  tooltip.className = "yab-tooltip";
-  tooltip.id = "yab-tooltip";
+  const tooltip = ensureTooltipElement();
   updateTooltipContent(tooltip, info);
 
   updateButtonState(reportBtn, info);
@@ -174,14 +172,47 @@ function createReportUI(info) {
   reportBtn.addEventListener("click", () => handleReport());
   reportBtn.addEventListener("touchstart", () => handleReport());
   reportBtn.addEventListener("mouseenter", () => {
-    if (settings.showTooltip !== false) tooltip.classList.add("yab-tooltip-visible");
+    if (settings.showTooltip === false) return;
+    positionTooltip(tooltip, reportBtn);
+    tooltip.classList.add("yab-tooltip-visible");
   });
-  reportBtn.addEventListener("mouseleave", () => tooltip.classList.remove("yab-tooltip-visible"));
+  reportBtn.addEventListener("mouseleave", () => {
+    tooltip.classList.remove("yab-tooltip-visible");
+  });
 
   container.appendChild(reportBtn);
-  container.appendChild(tooltip);
-
   return container;
+}
+
+function ensureTooltipElement() {
+  let tooltip = document.getElementById("yab-tooltip");
+  if (tooltip) return tooltip;
+
+  tooltip = document.createElement("div");
+  tooltip.className = "yab-tooltip";
+  tooltip.id = "yab-tooltip";
+  tooltip.dataset.placement = "top";
+  document.body.appendChild(tooltip);
+  return tooltip;
+}
+
+function positionTooltip(tooltip, targetEl) {
+  if (!tooltip || !targetEl) return;
+
+  const rect = targetEl.getBoundingClientRect();
+  const tooltipWidth = tooltip.offsetWidth || 260;
+  const tooltipHeight = tooltip.offsetHeight || 120;
+  const edgePadding = 12;
+
+  let centerX = rect.left + rect.width / 2;
+  const minCenter = edgePadding + tooltipWidth / 2;
+  const maxCenter = window.innerWidth - edgePadding - tooltipWidth / 2;
+  centerX = Math.min(maxCenter, Math.max(minCenter, centerX));
+
+  const canRenderAbove = rect.top >= tooltipHeight + edgePadding + 10;
+  tooltip.dataset.placement = canRenderAbove ? "top" : "bottom";
+  tooltip.style.left = `${centerX}px`;
+  tooltip.style.top = canRenderAbove ? `${rect.top}px` : `${rect.bottom}px`;
 }
 
 function buildTooltipText(info) {
