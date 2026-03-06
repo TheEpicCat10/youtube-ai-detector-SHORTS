@@ -6,7 +6,7 @@ default-run = "youtube-ai-blocker-backend"
 
 [[bin]]
 name = "yab-cli"
-path = "src/bin/cli.rs"
+path = "src/bin/yab-cli.rs"
 
 [[bin]]
 name = "youtube-ai-blocker-backend"
