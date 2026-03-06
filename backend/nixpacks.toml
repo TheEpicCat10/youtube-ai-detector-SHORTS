@@ -1,5 +1,0 @@
-[phases.build]
-cmds = ["cargo build --release && mkdir -p /app/bin && cp /app/target/release/youtube-ai-blocker-backend /app/bin/"]
-
-[start]
-cmd = "./bin/youtube-ai-blocker-backend"
