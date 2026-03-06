@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["rustc", "cargo", "gcc"]
-
-[phases.build]
-cmds = ["cd backend && cargo build --release"]
-
-[start]
-cmd = "cd backend && ./target/release/youtube-ai-blocker-backend"
