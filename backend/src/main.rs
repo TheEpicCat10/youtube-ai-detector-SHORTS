@@ -52,6 +52,7 @@ async fn main() {
             AllowOrigin::list([
                 "https://www.youtube.com".parse().unwrap(),
                 "https://youtube.com".parse().unwrap(),
+                "chrome-extension://imnjokihehlagfjdfofompomoblcepec".parse().unwrap(),
             ])
         })
         .allow_methods(AllowMethods::any())
